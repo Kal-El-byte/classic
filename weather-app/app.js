@@ -1,21 +1,14 @@
+const request = require('request');
 
-const geoLocation = require('./utils.js/geocode')
-const forecast = require('./utils.js/forecast')
+//forecast weather api
+const url = 'http://api.weatherstack.com/current?access_key=9863ad178291d21b0085414c8bc0fec7&query=New%York';
 
-const address = process.argv[2]
-
-if (!address){
-    return console.log('please input a valid address search')
-}
-geoLocation(address, (error, data) => {
-    if(error){
-       return console.log(error);
+request({  url: url, json: true}, (error, response) => {
+    if (error){
+        console.log('Unable to connect to weather service')
+    }else if (response.body.error){
+        console.log('Invalid weather address, try another search')
+    }else{
+    console.log(response.body.current.weather_descriptions + ', It is currently ' + response.body.current.temperature + '°C out' + '. There is a ' + response.body.current.precip + '% chance of rain')
     }
-    forecast(data.latitude, data.longitude, (error, forecastData) => {
-        if(error){
-            return console.log(error);
-        }
-            console.log(data.location)
-            console.log(forecastData);
-    });
-});
+})
