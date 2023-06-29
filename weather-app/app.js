@@ -7,6 +7,7 @@ const address = process.argv[2];
 if(!address){
    return console.log('Please provide a search address')
 }
+// The input of forecast comes from output of geocode
 geocode(address, (error, data) => {
     if(error){
         return console.log(error);
