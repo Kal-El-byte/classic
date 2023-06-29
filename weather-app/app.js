@@ -1,31 +1,18 @@
-const request = require('request');
-// const forecast = require('./utils.js/forecast')
+const forecast = require('./utils.js/forecast');
+const geocode = require('./utils.js/geocode');
 
-// forecast(-71.456215, 41.80702, (error, data) => {
-//     console.log('error: ', error)
-//     console.log('data: ', data)
-// })
-const geocode = (address, callback) => {
-geocodeURL = 'https://api.mapbox.com/geocoding/v5/mapbox.places/ ' + address + '.json?access_token=pk.eyJ1IjoiZGFuaXZldCIsImEiOiJjbGgxMjV1OHAwZmliM2VvaDdzOW0yeHByIn0.l_G-81CNE38lrbaeJQCpGw&limit=1';
+//get address input from user
+const address = process.argv[2];
 
-request( { url: geocodeURL, json: true}, (error, response) => {
+if(!address){
+   return console.log('Please provide a search address')
+}
+geocode(address, (error, data) => {
     if(error){
-        callback('Unable to connect to location service', undefined);
-    }else if(response.body.features.length === 0){
-        callback('location search could not be found, try another search', undefined);
-    }else{
-        callback(undefined, {
-            latitude: response.body.features[0].center[1],
-            longitude: response.body.features[0].center[0],
-            location: response.body.features[0].place_name
-        });
+        return console.log(error);
     };
-});
-};
-
-geocode('New York', (error, data) => {
-    if(error){
-        return console.log(error)
-    }
-    console.log(data)
+    forecast(data.latitude, data.longitude, (error, forecastdata) => {
+        console.log(data.location);
+        console.log(forecastdata);
+    });
 });
