@@ -24,5 +24,8 @@ request( { url: geocodeURL, json: true}, (error, response) => {
 };
 
 geocode('New York', (error, data) => {
+    if(error){
+        return console.log(error)
+    }
     console.log(data)
 });
