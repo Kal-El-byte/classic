@@ -8,12 +8,12 @@ if(!address){
    return console.log('Please provide a search address')
 }
 // The input of forecast comes from output of geocode
-geocode(address, (error, data) => {
+geocode(address, (error, {latitude, longitude, location} = {}) => {
     if(error){
         return console.log(error);
     };
-    forecast(data.latitude, data.longitude, (error, forecastdata) => {
-        console.log(data.location);
+    forecast(latitude, longitude, (error, forecastdata) => {
+        console.log(location);
         console.log(forecastdata);
     });
 });

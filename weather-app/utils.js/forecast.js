@@ -5,13 +5,13 @@ const request = require('request');
 const forecast = (lat, long, callback) => {
 const url = 'http://api.weatherstack.com/current?access_key=9863ad178291d21b0085414c8bc0fec7&query=' + encodeURIComponent(lat) + ', ' + encodeURIComponent(long) + '';
 
-request({  url: url, json: true}, (error, response) => {
+request({ url, json: true}, (error, {body} = {}) => {
     if (error){
         callback('Unable to connect to weather service', undefined);
-    }else if (response.body.error){
+    }else if (body.error){
         callback('Invalid weather address, try another search', undefined);
     }else{
-    callback(undefined, response.body.current.weather_descriptions + ', It is currently ' + response.body.current.temperature + '°C out' + '. There is a ' + response.body.current.precip + '% chance of rain');
+    callback(undefined, body.current.weather_descriptions + ', It is currently ' + body.current.temperature + '°C out' + '. There is a ' + body.current.precip + '% chance of rain');
     };
 });
 };
