@@ -1,30 +1,43 @@
 const path = require('path')
 const express = require('express');
+const hbs = require('hbs')
 
-console.log(__dirname);
+//Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public');
+const viewsPath = path.join(__dirname, '../templates/views');
+const partialsPath = path.join(__dirname, '../templates/partials');
 
 //store the express in app variable for easy usage
 const app = express();
 
-//server up the path.join directries
-//app.use helps to customize the server
+//Setup handlebars engine and views location
+app.set('view engine', 'hbs');
+app.set('views', viewsPath);
+hbs.registerPartials(partialsPath)
+
+//Setup static directory to serve
 app.use(express.static(path.join(publicDirectoryPath)));
 
-//Home page
-// app.get('', (err, res) => {
-//     res.send('<h1>Home Page</h1>');
-// });
+app.get('', (req, res) => {
+    res.render('index', {
+        title: 'Weather',
+        name: 'Kamelot'
+    });
+});
 
-//help page
-// app.get('/help', (err, res) => {
-//     res.send('<h1>Help Page<h2>');
-// });
+app.get('/about', (req, res) => {
+    res.render('about', {
+        title: 'About',
+        name: 'Kamelot'
+    });
+});
 
-//about page
-// app.get('/about', (err, res) => {
-//     res.send('<h1>About Page</h1>');
-// });
+app.get('/help', (req, res) => {
+    res.render('help', {
+        title: 'Help Page',
+        name: 'Kamelot'
+    })
+})
 
 //weather page
 app.get('/weather', (err, res) => {
