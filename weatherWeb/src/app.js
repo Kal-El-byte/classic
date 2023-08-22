@@ -1,6 +1,8 @@
 const path = require('path')
 const express = require('express');
 const hbs = require('hbs')
+const geocode = require('./utils.js/geocode');
+const forecast = require('./utils.js/forecast')
 
 //Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public');
@@ -39,13 +41,46 @@ app.get('/help', (req, res) => {
     })
 })
 
+app.get('/help/*', (req, res) => {
+    res.render('404', {
+        title: '404',
+        errorMessage: 'Ooops!!! This help page no longer exist',
+        name: 'Kamelot'
+    })
+})
+
 //weather page
-app.get('/weather', (err, res) => {
-    res.send({
-        forecast: '29 °C, Mostly cloudy',
-        location: 'Boston'
+app.get('/weather', (req, res) => {
+    if(!req.query.address){
+        return res.send({
+            error: 'You must provide an address'
+        })
+    }
+    geocode(req.query.address, (error, {latitude, longitude, location} = {}) => {
+        if(error){
+            return res.send({error} );
+        };
+        forecast(latitude, longitude, (error, forecastdata) => {
+            if(error){
+                return res.send(error)
+            }
+            res.send({
+                address: req.query.address,
+                location: location,
+                forecast: forecastdata
+            });
+        });
     });
 });
+
+//404 page
+app.get('*', (req, res) => {
+    res.render('404', {
+        title: '404',
+        errorMessage: 'Oops!!! Page not found',
+        name: 'Kamelot'
+    })
+})
 
 //set url port
 app.listen(3000, () => {
