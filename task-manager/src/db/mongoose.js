@@ -82,7 +82,7 @@ const task = new Task({
 });
 
 task.save().then(() => {
-    console.log(task)
+    console.log(task); 
 }).catch((error) => {
-    console.log('Unable to save task')
+    console.log('Unable to save task');
 });
